@@ -7,4 +7,5 @@ nltk
 scikit-learn
 numpy
 pandas
-cors
+groq
+fpdf2
