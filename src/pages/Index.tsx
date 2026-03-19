@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import Landing from '@/pages/Landing';
 import Header from '@/components/Header';
 import TextInputPanel from '@/components/TextInputPanel';
 import ControlPanel from '@/components/ControlPanel';
@@ -14,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Flame } from 'lucide-react';
 
 const Index = () => {
+  const [showLanding, setShowLanding] = useState(true);
   const [text, setText] = useState('');
   const [isReading, setIsReading] = useState(false);
   const [settings, setSettings] = useState<ReadingSettings>(DEFAULT_SETTINGS);
@@ -61,9 +63,14 @@ const Index = () => {
     setShowHeatmap(false);
   }, [saveSession]);
 
+  // Show landing page first
+  if (showLanding) {
+    return <Landing onGetStarted={() => setShowLanding(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header onHome={() => setShowLanding(true)} />
       <main className="container px-4 py-8 max-w-7xl">
         {!isReading ? (
           <div className="max-w-3xl mx-auto animate-fade-in">
