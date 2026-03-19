@@ -7,6 +7,8 @@ import BehaviorPanel from '@/components/BehaviorPanel';
 import QuizPanel from '@/components/QuizPanel';
 import CognitiveDashboard from '@/components/CognitiveDashboard';
 import TextToSpeech from '@/components/TextToSpeech';
+import ReadingCompanion from '@/components/ReadingCompanion';
+import ProgressHistory from '@/components/ProgressHistory';
 import { ReadingSettings, DEFAULT_SETTINGS } from '@/types/reading';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Flame } from 'lucide-react';
@@ -19,6 +21,30 @@ const Index = () => {
   const [simplifiedCount, setSimplifiedCount] = useState(0);
   const [showHeatmap, setShowHeatmap] = useState(false);
 
+  const paragraphCount = text.split(/\n\s*\n/).filter((p) => p.trim()).length;
+
+  const saveSession = useCallback(async () => {
+    if (!text.trim()) return;
+    try {
+      await fetch('/api/history/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: 'user123',
+          text_preview: text.substring(0, 100),
+          duration_seconds: 60,
+          difficult_count: difficultParagraphs.length,
+          total_paragraphs: paragraphCount,
+          simplified_count: simplifiedCount,
+          quiz_score: 0,
+          quiz_total: 0,
+        }),
+      });
+    } catch {
+      console.error('Failed to save session');
+    }
+  }, [text, difficultParagraphs, simplifiedCount, paragraphCount]);
+
   const handleTextSubmit = useCallback((t: string) => {
     setText(t);
     setIsReading(true);
@@ -28,13 +54,12 @@ const Index = () => {
   }, []);
 
   const handleBack = useCallback(() => {
+    saveSession();
     setIsReading(false);
     setDifficultParagraphs([]);
     setSimplifiedCount(0);
     setShowHeatmap(false);
-  }, []);
-
-  const paragraphCount = text.split(/\n\s*\n/).filter((p) => p.trim()).length;
+  }, [saveSession]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,11 +75,14 @@ const Index = () => {
                 Paste your text below. Cognify adapts to how you read and highlights what's difficult.
               </p>
             </div>
-            <TextInputPanel onTextSubmit={handleTextSubmit} />
+            <ProgressHistory />
+            <div className="mt-6">
+              <TextInputPanel onTextSubmit={handleTextSubmit} />
+            </div>
           </div>
         ) : (
           <div className="animate-fade-in">
-            {/* Top bar with back + heatmap toggle */}
+            {/* Top bar */}
             <div className="mb-6 flex items-center gap-3">
               <Button variant="ghost" size="sm" onClick={handleBack}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -92,6 +120,7 @@ const Index = () => {
                 />
                 <QuizPanel text={text} />
                 <TextToSpeech text={text} />
+                <ReadingCompanion text={text} />
               </aside>
             </div>
           </div>
