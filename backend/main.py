@@ -89,3 +89,22 @@ def train_model():
 @app.post("/predict")
 def predict_difficulty(input: PredictInput):
     return difficulty_model.predict(input.sentence_data)
+
+from utils.quiz_generator import generate_quiz, evaluate_answer
+
+class QuizInput(BaseModel):
+    text: str
+    num_questions: int = 5
+
+class AnswerInput(BaseModel):
+    question: dict
+    user_answer: str
+
+@app.post("/quiz/generate")
+def create_quiz(input: QuizInput):
+    questions = generate_quiz(input.text, input.num_questions)
+    return {"questions": questions}
+
+@app.post("/quiz/evaluate")
+def check_answer(input: AnswerInput):
+    return evaluate_answer(input.question, input.user_answer)

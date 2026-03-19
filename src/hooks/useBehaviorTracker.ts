@@ -1,10 +1,10 @@
 import { useCallback, useRef, useState } from 'react';
 import { ParagraphBehavior } from '@/types/reading';
 
-const PAUSE_THRESHOLD_MS = 2000;
-const BACKTRACK_THRESHOLD_PX = 50;
-const DIFFICULTY_PAUSE_THRESHOLD = 5000;
-const DIFFICULTY_BACKTRACK_THRESHOLD = 3;
+const PAUSE_THRESHOLD_MS = 800        // was 2000 (pause detection faster)
+const BACKTRACK_THRESHOLD_PX = 30     // was 50 (detect smaller backtracks)
+const DIFFICULTY_PAUSE_THRESHOLD = 1500  // was 5000 (flag difficult faster)
+const DIFFICULTY_BACKTRACK_THRESHOLD = 2  // was 3 (fewer backtracks needed)
 
 export function useBehaviorTracker(paragraphCount: number) {
   const [behaviors, setBehaviors] = useState<ParagraphBehavior[]>([]);

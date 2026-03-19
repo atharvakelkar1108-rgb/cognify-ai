@@ -9,15 +9,15 @@ interface ReadingViewProps {
   text: string;
   settings: ReadingSettings;
   onBehaviorUpdate?: (difficultParagraphs: number[]) => void;
+  showHeatmap?: boolean;
 }
 
-const ReadingView = ({ text, settings, onBehaviorUpdate }: ReadingViewProps) => {
+const ReadingView = ({ text, settings, onBehaviorUpdate, showHeatmap = false }: ReadingViewProps) => {
   const paragraphs = text.split(/\n\s*\n/).filter((p) => p.trim());
   const [focusedLine, setFocusedLine] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const { initBehaviors, handleScroll, difficultParagraphs } = useBehaviorTracker(paragraphs.length);
 
-  // Simplification state
   const [simplifications, setSimplifications] = useState<Map<number, SimplifyResult>>(new Map());
   const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
   const [showSideBySide, setShowSideBySide] = useState<Set<number>>(new Set());
@@ -30,7 +30,6 @@ const ReadingView = ({ text, settings, onBehaviorUpdate }: ReadingViewProps) => 
     onBehaviorUpdate?.(difficultParagraphs);
   }, [difficultParagraphs, onBehaviorUpdate]);
 
-  // Clear simplifications when level changes
   useEffect(() => {
     setSimplifications(new Map());
     setShowSideBySide(new Set());
@@ -68,7 +67,6 @@ const ReadingView = ({ text, settings, onBehaviorUpdate }: ReadingViewProps) => 
       return;
     }
 
-    // Already simplified? Toggle side-by-side
     if (simplifications.has(index)) {
       setShowSideBySide(prev => {
         const next = new Set(prev);
@@ -79,7 +77,6 @@ const ReadingView = ({ text, settings, onBehaviorUpdate }: ReadingViewProps) => 
       return;
     }
 
-    // Simplify
     setLoadingIndex(index);
     try {
       const result = await simplifyText(paragraphText, settings.simplificationLevel);
@@ -112,9 +109,15 @@ const ReadingView = ({ text, settings, onBehaviorUpdate }: ReadingViewProps) => 
   }, []);
 
   const fontClass = FONT_FAMILY_MAP[settings.fontFamily];
-
   const isDifficult = (index: number) => difficultParagraphs.includes(index);
   const isSimplified = (index: number) => simplifications.has(index) && showSideBySide.has(index);
+
+  const getHeatmapColor = (index: number) => {
+    if (!showHeatmap) return '';
+    if (difficultParagraphs.includes(index))
+      return 'border-l-4 border-l-red-500 bg-red-50 dark:bg-red-950/20';
+    return 'border-l-4 border-l-green-500 bg-green-50 dark:bg-green-950/20';
+  };
 
   return (
     <div
@@ -123,6 +126,21 @@ const ReadingView = ({ text, settings, onBehaviorUpdate }: ReadingViewProps) => 
       className="overflow-y-auto rounded-lg border border-border bg-card p-6 md:p-10 animate-fade-in"
       style={{ maxHeight: '70vh' }}
     >
+      {/* Heatmap Legend */}
+      {showHeatmap && (
+        <div className="flex items-center gap-4 mb-4 p-3 rounded-lg bg-accent/50 text-xs">
+          <span className="font-medium">Heatmap:</span>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded bg-green-500" />
+            <span>Easy</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded bg-red-500" />
+            <span>Difficult</span>
+          </div>
+        </div>
+      )}
+
       <div className={`${fontClass} max-w-prose mx-auto space-y-4`}>
         {paragraphs.map((paragraph, index) => {
           const isFocused = settings.focusMode && focusedLine === index;
@@ -134,12 +152,12 @@ const ReadingView = ({ text, settings, onBehaviorUpdate }: ReadingViewProps) => 
 
           return (
             <div key={index} data-paragraph-index={index} className="group">
-              {/* Side-by-side comparison */}
               {showingComparison && simplified ? (
                 <div
                   className={`rounded-lg border border-primary/20 overflow-hidden transition-all duration-300
                     ${isFocused ? 'focus-line-highlight' : ''}
                     ${isDimmed ? 'opacity-25' : 'opacity-100'}
+                    ${getHeatmapColor(index)}
                   `}
                 >
                   <div className="flex items-center justify-between px-4 py-2 bg-accent/50 border-b border-border">
@@ -177,11 +195,11 @@ const ReadingView = ({ text, settings, onBehaviorUpdate }: ReadingViewProps) => 
                   </div>
                 </div>
               ) : (
-                /* Normal paragraph */
                 <p
                   onClick={() => handleParagraphClick(index, paragraph.trim())}
                   className={`
                     rounded px-3 py-2 transition-all duration-300
+                    ${getHeatmapColor(index)}
                     ${isFocused ? 'focus-line-highlight' : ''}
                     ${isDimmed ? 'opacity-25' : 'opacity-100'}
                     ${difficult ? 'difficulty-high cursor-pointer hover:ring-2 hover:ring-primary/30' : ''}
