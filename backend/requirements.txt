@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+google-generativeai
+python-dotenv
+PyPDF2
+nltk
+scikit-learn
+numpy
+pandas
+cors
