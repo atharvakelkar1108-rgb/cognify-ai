@@ -11,7 +11,8 @@ export async function simplifyText(
   text: string,
   level: SimplificationLevel
 ): Promise<SimplifyResult> {
-  const response = await fetch('/api/simplify', {
+    const API_URL = import.meta.env.VITE_API_URL || '';
+const response = await fetch(`${API_URL}/simplify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sentence: text, level: level }),

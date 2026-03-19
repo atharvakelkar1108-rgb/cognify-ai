@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://cognify-ai-backend-f9iv.onrender.com/:path*"
+    }
+  ]
+}
