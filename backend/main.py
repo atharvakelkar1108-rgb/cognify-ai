@@ -305,3 +305,17 @@ def generate_report(input: ReportInput):
         media_type="application/pdf",
         filename="cognify_report.pdf"
     )
+
+import threading
+import urllib.request
+import time
+
+def keep_alive():
+    while True:
+        time.sleep(840)  # every 14 minutes
+        try:
+            urllib.request.urlopen('https://cognify-ai-backend-f9iv.onrender.com/health')
+        except:
+            pass
+
+threading.Thread(target=keep_alive, daemon=True).start()
