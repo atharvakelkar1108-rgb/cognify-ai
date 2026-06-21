@@ -50,33 +50,45 @@ cd cognify-ai
 **2. Setup Frontend:**
 ```bash
 npm install
-npm run dev
 ```
 
-**3. Setup Backend:**
-```bash
+**3. Setup Backend (Windows PowerShell):**
+```powershell
 cd backend
-python -m venv venv
-venv\Scripts\activate
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
+> If PowerShell prevents activation, run:
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+> ```
+
 **4. Add API Keys:**
-```bash
-# Create backend/.env file
+Create a `backend\.env` file with the Groq key:
+```text
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
 **5. Run Backend:**
-```bash
-uvicorn main:app --reload
+```powershell
+python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-**6. Open browser:**
+**6. Run Frontend:**
+From the repo root in a separate terminal:
+```bash
+npm run dev
 ```
-Frontend: http://localhost:8080
-Backend:  http://localhost:8000/docs
-```
+
+**7. Open browser:**
+- Frontend: `http://localhost:5173`
+- Backend API docs: `http://127.0.0.1:8000/docs`
+
+---
+
+If `uvicorn` is not recognized, make sure the backend virtual environment is activated, then run `python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000`.
 
 ---
 

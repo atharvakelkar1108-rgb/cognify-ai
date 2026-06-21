@@ -1,4 +1,5 @@
 import { SimplificationLevel } from '@/types/reading';
+import { apiUrl } from '@/config';
 
 export interface SimplifyResult {
   original: string;
@@ -11,8 +12,7 @@ export async function simplifyText(
   text: string,
   level: SimplificationLevel
 ): Promise<SimplifyResult> {
-    const API_URL = import.meta.env.VITE_API_URL || '';
-const response = await fetch(`${API_URL}/simplify`, {
+  const response = await fetch(apiUrl('/simplify'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sentence: text, level: level }),

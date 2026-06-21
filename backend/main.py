@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Cognify AI Backend")
@@ -44,6 +44,9 @@ class ExplainInput(BaseModel):
 @app.post("/simplify")
 def simplify(input: SimplifyInput):
     result = simplify_sentence(input.sentence, input.level)
+    # If the simplifier returned an error string, surface it as an HTTP error
+    if isinstance(result, str) and result.startswith("Error simplifying:"):
+        raise HTTPException(status_code=502, detail=result)
     return {"simplified": result}
 
 @app.post("/explain")
