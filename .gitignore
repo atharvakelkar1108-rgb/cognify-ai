@@ -25,3 +25,6 @@ dist-ssr
 .env
 .env.local
 .env.production
+
+# Local misc / archived files (not part of the project)
+_misc/
