@@ -3,6 +3,8 @@
 
 Cognify AI is an intelligent reading assistant built for ADHD and dyslexia users. It adapts to how you read, identifies difficult sections, and uses AI to simplify them in real-time.
 
+**🌐 Live App:** [https://cognify-ai-ten.vercel.app](https://cognify-ai-ten.vercel.app)
+
 ---
 
 ## ✨ Features
@@ -28,7 +30,19 @@ Cognify AI is an intelligent reading assistant built for ADHD and dyslexia users
 | AI Model | Groq (LLaMA 3.1) |
 | ML Model | Scikit-learn Random Forest (difficulty prediction) |
 | NLP | NLTK |
-| Deployment | Vercel + Render |
+| Deployment | [Vercel](https://cognify-ai-ten.vercel.app) (frontend) + [Render](https://cognify-ai-j9xs.onrender.com) (backend) |
+
+---
+
+## 🌍 Deployment
+
+| Service | URL |
+|---|---|
+| **Frontend (Vercel)** | https://cognify-ai-ten.vercel.app |
+| **Backend API (Render)** | https://cognify-ai-j9xs.onrender.com |
+| **API Docs** | https://cognify-ai-j9xs.onrender.com/docs |
+
+The Vercel frontend proxies `/api/*` requests to the Render backend via `vercel.json`.
 
 ---
 
@@ -83,7 +97,7 @@ npm run dev
 ```
 
 **7. Open browser:**
-- Frontend: `http://localhost:5173`
+- Frontend: `http://localhost:8080`
 - Backend API docs: `http://127.0.0.1:8000/docs`
 
 ---
