@@ -21,14 +21,14 @@ def simplify_sentence(sentence: str, level: str = "Easy") -> str:
         "Hard": "Slightly simplify in 1-2 sentences:"
     }
 
-    prompt = f"{level_prompts.get(level, level_prompts['Easy'])}\n{sentence[:500]}"
+    prompt = f"{level_prompts.get(level, level_prompts['Easy'])}\n{sentence[:500]}\n\nRespond only with the simplified text in one complete sentence or paragraph. Do not add bullets, labels, or extra commentary."
 
     try:
         response = client.chat.completions.create(
             model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=150,        # Reduced from 500
-            temperature=0.3,       # More focused responses
+            max_tokens=220,
+            temperature=0.3,
         )
         result = response.choices[0].message.content.strip()
         _cache[cache_key] = result  # Save to cache
@@ -47,13 +47,13 @@ def explain_sentence(sentence: str, mode: str = "eli5") -> str:
         "summary": "Summarize in one simple sentence:"
     }
 
-    prompt = f"{mode_prompts.get(mode, mode_prompts['eli5'])}\n{sentence[:500]}"
+    prompt = f"{mode_prompts.get(mode, mode_prompts['eli5'])}\n{sentence[:500]}\n\nRespond only with the explanation in simple, complete sentences. Do not add extra bullets or commentary."
 
     try:
         response = client.chat.completions.create(
             model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=100,
+            max_tokens=140,
             temperature=0.3,
         )
         result = response.choices[0].message.content.strip()
