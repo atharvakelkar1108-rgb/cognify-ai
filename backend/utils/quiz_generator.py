@@ -5,6 +5,7 @@ from groq import Groq
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
 def generate_quiz(text: str, num_questions: int = 5) -> list:
     """Generate MCQ quiz from text using Groq AI"""
@@ -33,7 +34,7 @@ Return ONLY the JSON array, no other text."""
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=2000
         )

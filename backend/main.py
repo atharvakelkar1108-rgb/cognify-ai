@@ -121,6 +121,7 @@ def ask_companion(input: CompanionInput):
     from groq import Groq
     import os
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    groq_model = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
     
     prompt = f"""You are a helpful reading assistant for ADHD and dyslexia users.
 Answer questions about the text in simple, clear language.
@@ -133,7 +134,7 @@ Answer in 2-3 simple sentences maximum:"""
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model=groq_model,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=200
         )

@@ -4,6 +4,7 @@ from groq import Groq
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
 # Cache to avoid duplicate API calls
 _cache = {}
@@ -24,7 +25,7 @@ def simplify_sentence(sentence: str, level: str = "Easy") -> str:
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=150,        # Reduced from 500
             temperature=0.3,       # More focused responses
@@ -50,7 +51,7 @@ def explain_sentence(sentence: str, mode: str = "eli5") -> str:
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=100,
             temperature=0.3,
