@@ -5,7 +5,7 @@ from groq import Groq
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 def generate_quiz(text: str, num_questions: int = 5) -> list:
     """Generate MCQ quiz from text using Groq AI"""

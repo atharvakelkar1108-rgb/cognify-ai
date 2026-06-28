@@ -4,7 +4,7 @@ from groq import Groq
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 # Cache to avoid duplicate API calls
 _cache = {}
