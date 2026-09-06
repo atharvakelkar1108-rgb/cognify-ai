@@ -36,10 +36,13 @@ Return ONLY the JSON array, no other text."""
         response = client.chat.completions.create(
             model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=2000
+            max_completion_tokens=2048,
+            reasoning_effort="low",
         )
         
-        content = response.choices[0].message.content.strip()
+        content = (response.choices[0].message.content or "").strip()
+        if not content:
+            return generate_fallback_quiz(text)
         
         # Clean up response
         if "```json" in content:

@@ -21,7 +21,10 @@ export async function simplifyText(
   if (!response.ok) throw new Error('Failed to simplify text');
 
   const data = await response.json();
-  const simplified = data.simplified;
+  const simplified = (data.simplified || '').trim();
+  if (!simplified || simplified.startsWith('Error simplifying:')) {
+    throw new Error(simplified || 'Empty simplification from API');
+  }
   const changesCount = countDifferences(text, simplified);
 
   return {

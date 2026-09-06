@@ -136,9 +136,13 @@ Answer in 2-3 simple sentences maximum:"""
         response = client.chat.completions.create(
             model=groq_model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=200
+            max_completion_tokens=1024,
+            reasoning_effort="low",
         )
-        return {"answer": response.choices[0].message.content.strip()}
+        answer = (response.choices[0].message.content or "").strip()
+        if not answer:
+            return {"answer": "Sorry, I could not generate an answer. Please try again."}
+        return {"answer": answer}
     except Exception as e:
         return {"answer": f"Error: {str(e)}"}
 

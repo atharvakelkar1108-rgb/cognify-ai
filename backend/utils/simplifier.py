@@ -27,10 +27,15 @@ def simplify_sentence(sentence: str, level: str = "Easy") -> str:
         response = client.chat.completions.create(
             model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=220,
+            # gpt-oss is a reasoning model: low max_tokens can exhaust the
+            # budget on thinking and return empty content.
+            max_completion_tokens=1024,
             temperature=0.3,
+            reasoning_effort="low",
         )
-        result = response.choices[0].message.content.strip()
+        result = (response.choices[0].message.content or "").strip()
+        if not result:
+            return "Error simplifying: model returned empty content"
         _cache[cache_key] = result  # Save to cache
         return result
     except Exception as e:
@@ -53,10 +58,13 @@ def explain_sentence(sentence: str, mode: str = "eli5") -> str:
         response = client.chat.completions.create(
             model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=140,
+            max_completion_tokens=1024,
             temperature=0.3,
+            reasoning_effort="low",
         )
-        result = response.choices[0].message.content.strip()
+        result = (response.choices[0].message.content or "").strip()
+        if not result:
+            return "Error explaining: model returned empty content"
         _cache[cache_key] = result
         return result
     except Exception as e:
