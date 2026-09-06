@@ -27,7 +27,7 @@ Cognify AI is an intelligent reading assistant built for ADHD and dyslexia users
 |---|---|
 | Frontend | React + TypeScript + Tailwind CSS |
 | Backend | Python + FastAPI |
-| AI Model | Groq (LLaMA 3.1) |
+| AI Model | Groq (openai/gpt-oss-20b) |
 | ML Model | Scikit-learn Random Forest (difficulty prediction) |
 | NLP | NLTK |
 | Deployment | [Vercel](https://cognify-ai-ten.vercel.app) (frontend) + [Render](https://cognify-ai-j9xs.onrender.com) (backend) |
